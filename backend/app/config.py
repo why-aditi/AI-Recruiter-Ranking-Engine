@@ -1,12 +1,25 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Load .env from repo root (when running from backend/) or cwd
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_ENV_FILES = (
+    _REPO_ROOT / ".env",
+    Path(".env"),
+)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=_ENV_FILES,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     app_env: str = "development"
-    database_url: str = "postgresql+asyncpg://recruiter:recruiter@localhost:5432/recruiter_ranking"
-    database_url_sync: str = "postgresql://recruiter:recruiter@localhost:5432/recruiter_ranking"
+    database_url: str = "postgresql+asyncpg://recruiter:recruiter@localhost:5433/recruiter_ranking"
+    database_url_sync: str = "postgresql://recruiter:recruiter@localhost:5433/recruiter_ranking"
     redis_url: str = "redis://localhost:6379/0"
 
     groq_api_key: str = ""

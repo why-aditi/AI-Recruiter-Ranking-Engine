@@ -5,13 +5,19 @@ import sys
 from pathlib import Path
 
 import lightgbm as lgb
-import mlflow
-import mlflow.lightgbm
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupShuffleSplit
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
+
+try:
+    import mlflow
+    import mlflow.lightgbm
+
+    HAS_MLFLOW = True
+except ImportError:
+    HAS_MLFLOW = False
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
 
@@ -93,10 +99,11 @@ def train(max_rounds: int = 100) -> str:
     train_mask = labels_df["job_id"].isin([job_ids[i] for i in train_jobs])
     test_mask = labels_df["job_id"].isin([job_ids[i] for i in test_jobs])
 
-    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+    if HAS_MLFLOW:
+        mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-    with mlflow.start_run(run_name="lambdamart_ranker"):
+    def _train_body():
         train_data = lgb.Dataset(X[train_mask.values if hasattr(train_mask, 'values') else train_mask], label=y[train_mask.values if hasattr(train_mask, 'values') else train_mask])
         params = {
             "objective": "lambdarank",
@@ -113,7 +120,6 @@ def train(max_rounds: int = 100) -> str:
         test_y = y[test_mask.values if hasattr(test_mask, 'values') else test_mask]
         preds = model.predict(test_X)
 
-        # Group-wise NDCG
         ndcg_scores = []
         test_df = labels_df[test_mask]
         for jid, grp in test_df.groupby("job_id"):
@@ -124,15 +130,16 @@ def train(max_rounds: int = 100) -> str:
                 ndcg_scores.append(ndcg_at_k(local_labels, local_preds))
 
         avg_ndcg = np.mean(ndcg_scores) if ndcg_scores else 0.0
-        mlflow.log_metric("ndcg_at_10", avg_ndcg)
-        mlflow.log_param("num_features", len(FEATURE_NAMES))
-        mlflow.log_param("train_samples", len(X))
+        if HAS_MLFLOW:
+            mlflow.log_metric("ndcg_at_10", avg_ndcg)
+            mlflow.log_param("num_features", len(FEATURE_NAMES))
+            mlflow.log_param("train_samples", len(X))
 
         model_path = MODEL_DIR / "ranker.txt"
         model.save_model(str(model_path))
-        mlflow.lightgbm.log_model(model, "model")
+        if HAS_MLFLOW:
+            mlflow.lightgbm.log_model(model, "model")
 
-        # Promotion gate
         champion_path = MODEL_DIR / "champion_ndcg.txt"
         champion_ndcg = float(champion_path.read_text()) if champion_path.exists() else 0.0
         if avg_ndcg >= champion_ndcg:
@@ -143,6 +150,12 @@ def train(max_rounds: int = 100) -> str:
 
         print(f"Model saved to {model_path}")
         return str(model_path)
+
+    if HAS_MLFLOW:
+        with mlflow.start_run(run_name="lambdamart_ranker"):
+            return _train_body()
+    print("MLflow not installed — training without experiment tracking")
+    return _train_body()
 
 
 def _generate_synthetic_labels():

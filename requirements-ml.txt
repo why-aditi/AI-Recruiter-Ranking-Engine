@@ -1,0 +1,15 @@
+# ML offline pipelines — install after requirements-core.txt
+-r requirements-core.txt
+
+# pandas: 2.x on 3.11–3.12, 3.x on 3.13+ (3.14 has no pandas 2.x wheels)
+pandas>=2.2.3,<3; python_version < "3.13"
+pandas>=3.0.3; python_version >= "3.13"
+
+scikit-learn>=1.5.2
+matplotlib>=3.9.2
+pdfplumber>=0.11.4
+
+# mlflow requires pandas<3 — not compatible with Python 3.13+ (only pandas 3.x has wheels)
+mlflow>=2.16.2; python_version < "3.13"
+
+shap>=0.46.0; python_version >= "3.14"

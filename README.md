@@ -28,26 +28,57 @@ cp .env.example .env
 # Set GROQ_API_KEY in .env
 ```
 
-### 2. Start infrastructure
+### 2. Install Python dependencies
+
+**Windows (Git Bash — no `make` required):**
 
 ```bash
-make up
+bash scripts/setup.sh
 ```
 
-### 3. Install Python dependencies
+**Windows (PowerShell):**
+
+```powershell
+powershell -File scripts/setup.ps1
+```
+
+**Manual install (any OS):**
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate        # Windows
-pip install -r requirements.txt
+source .venv/Scripts/activate   # Git Bash on Windows
+pip install --upgrade pip wheel
+pip install -r requirements-core.txt
+pip install -r requirements-ml.txt
+```
+
+> **Python 3.14 on Windows:** The pinned `pandas==2.2.3` has no wheel for 3.14 and will fail to compile. Use `requirements-core.txt` + `requirements-ml.txt` (they auto-select `pandas>=3.0.3`). For fewest issues, use **Python 3.11** (matches Docker).
+
+### 3. Start infrastructure (requires Docker Desktop)
+
+Docker Postgres listens on **host port 5433** (not 5432) so it won't clash with a local PostgreSQL install.
+
+```bash
+bash scripts/up.sh          # Git Bash
+# or: powershell -File scripts/up.ps1
+# or: docker compose -f infra/docker-compose.yml up -d postgres redis mlflow
+```
+
+Ensure `.env` uses port **5433**:
+```
+DATABASE_URL=postgresql+asyncpg://recruiter:recruiter@localhost:5433/recruiter_ranking
+DATABASE_URL_SYNC=postgresql://recruiter:recruiter@localhost:5433/recruiter_ranking
 ```
 
 ### 4. Run migrations & seed
 
 ```bash
-cd backend && alembic upgrade head && cd ..
+bash scripts/check-db.sh    # verify connection first
+bash scripts/migrate.sh     # uses: python -m alembic upgrade head
 python scripts/seed_db.py
 ```
+
+**Do not run bare `alembic`** — use `python -m alembic` from the activated venv, or the scripts above.
 
 ### 5. Prepare data
 
@@ -120,6 +151,35 @@ Protected/proxy attributes (gender, age, ethnicity, photo) are **excluded** from
 ## Ops
 
 See [docs/runbooks.md](docs/runbooks.md) for LLM outage, model rollback, and latency runbooks.
+
+## Troubleshooting
+
+### `password authentication failed for user "recruiter"`
+
+Port **5432** on your machine is almost certainly a **local PostgreSQL** install, not this project's Docker database. The app expects user `recruiter` / password `recruiter`.
+
+**Option A — Docker (recommended):** Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), then:
+
+```bash
+bash scripts/up.sh
+```
+
+Update `.env` to use port **5433** (see `.env.example`), then:
+
+```bash
+bash scripts/check-db.sh
+bash scripts/migrate.sh
+```
+
+**Option B — Use local Postgres on 5432:** Create the app user/database (requires [pgvector](https://github.com/pgvector/pgvector) installed locally):
+
+```bash
+psql -U postgres -f scripts/init-local-postgres.sql
+```
+
+Keep `.env` on port 5432 with `recruiter`/`recruiter`.
+
+**Option C — Your own credentials:** Set `DATABASE_URL` and `DATABASE_URL_SYNC` in `.env` to match your existing Postgres user, password, and database.
 
 ## Project structure
 
