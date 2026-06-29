@@ -40,13 +40,18 @@ def ndcg_at_k(y_true: list, y_score: list, k: int = 10) -> float:
     return dcg / idcg if idcg > 0 else 0.0
 
 
-def build_training_data(session: Session, labels_df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    X, y, groups = [], [], []
-    job_cache = {}
-    cand_cache = {}
+def build_training_data(
+    session: Session, labels_df: pd.DataFrame
+) -> tuple[np.ndarray, np.ndarray, list[str]]:
+    X, y, row_job_ids = [], [], []
+    job_cache: dict[str, JobProfile] = {}
+    cand_cache: dict[str, CandidateProfile] = {}
 
     for job_id, group in labels_df.groupby("job_id"):
-        job_row = session.execute(text("SELECT raw_text, job_profile FROM jobs WHERE id = :id"), {"id": job_id}).fetchone()
+        job_row = session.execute(
+            text("SELECT raw_text, job_profile FROM jobs WHERE id = :id"),
+            {"id": job_id},
+        ).fetchone()
         if not job_row:
             continue
         if job_id not in job_cache:
@@ -55,11 +60,13 @@ def build_training_data(session: Session, labels_df: pd.DataFrame) -> tuple[np.n
             else:
                 job_cache[job_id] = JobProfile(must_have_skills=["python"], domain_context="tech")
 
-        group_size = 0
         for _, row in group.iterrows():
             cid = row["candidate_id"]
             if cid not in cand_cache:
-                cand_row = session.execute(text("SELECT profile FROM candidates WHERE id = :id"), {"id": cid}).fetchone()
+                cand_row = session.execute(
+                    text("SELECT profile FROM candidates WHERE id = :id"),
+                    {"id": cid},
+                ).fetchone()
                 if cand_row and cand_row.profile:
                     cand_cache[cid] = CandidateProfile(**cand_row.profile)
                 else:
@@ -67,11 +74,23 @@ def build_training_data(session: Session, labels_df: pd.DataFrame) -> tuple[np.n
             features = compute_features(job_cache[job_id], cand_cache[cid])
             X.append(features_to_vector(features))
             y.append(row["label"])
-            group_size += 1
-        if group_size > 0:
-            groups.append(group_size)
+            row_job_ids.append(str(job_id))
 
-    return np.array(X), np.array(y), np.array(groups)
+    return np.array(X), np.array(y), row_job_ids
+
+
+def _groups_for_rows(row_job_ids: list[str]) -> list[int]:
+    """LightGBM lambdarank group sizes (contiguous rows per query/job)."""
+    groups: list[int] = []
+    i = 0
+    while i < len(row_job_ids):
+        job = row_job_ids[i]
+        j = i + 1
+        while j < len(row_job_ids) and row_job_ids[j] == job:
+            j += 1
+        groups.append(j - i)
+        i = j
+    return groups
 
 
 def train(max_rounds: int = 100) -> str:
@@ -83,28 +102,37 @@ def train(max_rounds: int = 100) -> str:
     engine = create_engine(settings.database_url_sync)
 
     with Session(engine) as session:
-        X, y, groups = build_training_data(session, labels_df)
+        X, y, row_job_ids = build_training_data(session, labels_df)
 
     if len(X) < 10:
         print("Insufficient training data. Generating synthetic labels...")
         _generate_synthetic_labels()
         labels_df = pd.read_csv(LABELS_PATH)
         with Session(engine) as session:
-            X, y, groups = build_training_data(session, labels_df)
+            X, y, row_job_ids = build_training_data(session, labels_df)
 
+    unique_jobs = list(dict.fromkeys(row_job_ids))
     gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-    job_ids = labels_df.groupby("job_id").size().index.tolist()
-    train_jobs, test_jobs = next(gss.split(job_ids, groups=job_ids))
+    train_job_idx, test_job_idx = next(gss.split(unique_jobs, groups=unique_jobs))
+    train_jobs = {unique_jobs[i] for i in train_job_idx}
+    test_jobs = {unique_jobs[i] for i in test_job_idx}
 
-    train_mask = labels_df["job_id"].isin([job_ids[i] for i in train_jobs])
-    test_mask = labels_df["job_id"].isin([job_ids[i] for i in test_jobs])
+    train_indices = [i for i, jid in enumerate(row_job_ids) if jid in train_jobs]
+    test_indices = [i for i, jid in enumerate(row_job_ids) if jid in test_jobs]
+
+    train_X, train_y = X[train_indices], y[train_indices]
+    test_X, test_y = X[test_indices], y[test_indices]
+    train_row_jobs = [row_job_ids[i] for i in train_indices]
+    test_row_jobs = [row_job_ids[i] for i in test_indices]
+    train_groups = _groups_for_rows(train_row_jobs)
+    test_groups = _groups_for_rows(test_row_jobs)
 
     if HAS_MLFLOW:
         mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
     def _train_body():
-        train_data = lgb.Dataset(X[train_mask.values if hasattr(train_mask, 'values') else train_mask], label=y[train_mask.values if hasattr(train_mask, 'values') else train_mask])
+        train_data = lgb.Dataset(train_X, label=train_y, group=train_groups)
         params = {
             "objective": "lambdarank",
             "metric": "ndcg",
@@ -116,16 +144,14 @@ def train(max_rounds: int = 100) -> str:
         }
         model = lgb.train(params, train_data, num_boost_round=max_rounds)
 
-        test_X = X[test_mask.values if hasattr(test_mask, 'values') else test_mask]
-        test_y = y[test_mask.values if hasattr(test_mask, 'values') else test_mask]
         preds = model.predict(test_X)
 
         ndcg_scores = []
-        test_df = labels_df[test_mask]
-        for jid, grp in test_df.groupby("job_id"):
-            idx = grp.index.tolist()
-            local_preds = [preds[list(test_df.index).index(i)] for i in idx if i in test_df.index]
-            local_labels = grp["label"].tolist()
+        offset = 0
+        for group_size in test_groups:
+            local_labels = test_y[offset : offset + group_size].tolist()
+            local_preds = preds[offset : offset + group_size].tolist()
+            offset += group_size
             if local_labels:
                 ndcg_scores.append(ndcg_at_k(local_labels, local_preds))
 
@@ -133,7 +159,7 @@ def train(max_rounds: int = 100) -> str:
         if HAS_MLFLOW:
             mlflow.log_metric("ndcg_at_10", avg_ndcg)
             mlflow.log_param("num_features", len(FEATURE_NAMES))
-            mlflow.log_param("train_samples", len(X))
+            mlflow.log_param("train_samples", len(train_X))
 
         model_path = MODEL_DIR / "ranker.txt"
         model.save_model(str(model_path))
@@ -171,6 +197,7 @@ def _generate_synthetic_labels():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--rounds", type=int, default=100)
+    args = parser.parse_args()
     train(args.rounds)
 
 

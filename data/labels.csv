@@ -1,0 +1,51 @@
+job_id,candidate_id,label,reason
+ce634e92-751e-41fe-b210-d1a1e2983e7e,ba2cac21-ac36-49b8-add7-7d4547db263a,1,"Weak fit due to lack of direct experience with Spark, SQL, Airflow, and healthcare data, despite having Python skills"
+992906db-ceff-47c9-ad90-1dbb15d63303,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,0,"No relevant technical skills or experience in data engineering, healthcare, or required technologies"
+ff0b86a9-0f48-4324-986b-3d3811017c03,0dac287b-0eae-41e0-9ab3-aa363f22841d,3,"Excellent fit due to matching required skills, relevant fintech experience, and leadership background in a similar startup environment"
+ff0b86a9-0f48-4324-986b-3d3811017c03,9d0fd135-8aab-4573-93e4-ce23a89c45b4,3,"Alex has all the must-have skills, relevant fintech experience, and meets the nice-to-have requirements, with a strong background in leading teams and thriving in ambiguity."
+992906db-ceff-47c9-ad90-1dbb15d63303,70c19607-acc6-4922-9862-3af72ca3af44,3,Candidate has all required skills and extensive experience in healthcare analytics
+19eb00e1-f124-415c-aa27-135d3485bfad,ba2cac21-ac36-49b8-add7-7d4547db263a,1,"Weak fit due to lack of direct backend engineering experience and PostgreSQL skills, but has relevant skills in Python, AWS, and experience with fast-paced growth-stage companies."
+ff0b86a9-0f48-4324-986b-3d3811017c03,00dc0826-b047-48db-9ef2-88d03cc8efba,1,"Weak fit due to lack of direct backend engineering experience and PostgreSQL skills, despite having relevant skills like Python, AWS, and experience with Kubernetes."
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,93f08db5-6606-420a-ad39-a826e5d37136,3,"Candidate has 3+ years of experience with React, TypeScript, and relevant skills like Next.js, meeting all requirements"
+ff0b86a9-0f48-4324-986b-3d3811017c03,ba2cac21-ac36-49b8-add7-7d4547db263a,1,"Weak fit due to lack of direct backend engineering experience and PostgreSQL skills, despite having relevant skills like Python, AWS, and experience with Kubernetes."
+ff0b86a9-0f48-4324-986b-3d3811017c03,d697c46d-1cc5-43b6-b5a5-d01fcc263a0c,0,Candidate lacks required backend skills and experience
+4ef20978-359e-4fdc-88f2-fc103420aba4,ba2cac21-ac36-49b8-add7-7d4547db263a,0,"No relevant experience with React, TypeScript, or CSS, and primary background is in DevOps engineering"
+4ef20978-359e-4fdc-88f2-fc103420aba4,8aec0b5b-d3cf-4add-b81b-ea5020502300,2,"Candidate has React experience, meets required skills and has adjacent expertise, but primary background is in Vue.js"
+992906db-ceff-47c9-ad90-1dbb15d63303,bfa355b2-09ed-4e2f-ae7d-748059c1a909,3,Candidate has all required skills and extensive experience in healthcare analytics
+992906db-ceff-47c9-ad90-1dbb15d63303,ba2cac21-ac36-49b8-add7-7d4547db263a,1,"Weak fit due to lack of direct experience with Spark, SQL, Airflow, and healthcare data, despite having Python skills"
+ce634e92-751e-41fe-b210-d1a1e2983e7e,00dc0826-b047-48db-9ef2-88d03cc8efba,1,"Weak fit due to lack of direct experience with Spark, SQL, Airflow, and healthcare data, despite having Python skills"
+ce634e92-751e-41fe-b210-d1a1e2983e7e,bfa355b2-09ed-4e2f-ae7d-748059c1a909,3,Candidate has all required skills and extensive experience in healthcare analytics
+ce634e92-751e-41fe-b210-d1a1e2983e7e,93f08db5-6606-420a-ad39-a826e5d37136,0,Candidate lacks required backend skills and experience in data engineering
+ff0b86a9-0f48-4324-986b-3d3811017c03,8aec0b5b-d3cf-4add-b81b-ea5020502300,0,"Candidate lacks required backend skills, specifically Python, PostgreSQL, and AWS experience"
+19eb00e1-f124-415c-aa27-135d3485bfad,9d0fd135-8aab-4573-93e4-ce23a89c45b4,3,"Alex has all the must-have skills, relevant fintech experience, and nice-to-have skills, with a strong background in leading teams and thriving in ambiguity"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,0dac287b-0eae-41e0-9ab3-aa363f22841d,0,"Candidate lacks required frontend skills, specifically React, TypeScript, and CSS, and has a strong backend focus."
+4ef20978-359e-4fdc-88f2-fc103420aba4,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,2,"Candidate has React experience, meets required skills and has adjacent experience with TypeScript and CSS implied through full stack development, but primary expertise is in Vue.js"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,70c19607-acc6-4922-9862-3af72ca3af44,0,"No relevant experience with React, TypeScript, or CSS, and primary skills are in data engineering"
+4ef20978-359e-4fdc-88f2-fc103420aba4,0dac287b-0eae-41e0-9ab3-aa363f22841d,0,"Candidate lacks required frontend skills, specifically React, TypeScript, and CSS, and has a strong backend focus."
+ff0b86a9-0f48-4324-986b-3d3811017c03,bfa355b2-09ed-4e2f-ae7d-748059c1a909,1,"Candidate has relevant skills like Python and AWS, but lacks direct backend engineering experience and fintech industry knowledge"
+ce634e92-751e-41fe-b210-d1a1e2983e7e,9d0fd135-8aab-4573-93e4-ce23a89c45b4,1,"Weak fit due to lack of direct experience with Spark, Airflow, and regulated/healthcare data, despite having relevant Python skills and strong engineering background."
+ff0b86a9-0f48-4324-986b-3d3811017c03,70c19607-acc6-4922-9862-3af72ca3af44,1,"Candidate has relevant skills like Python and AWS, but lacks direct backend engineering experience and fintech industry knowledge"
+ff0b86a9-0f48-4324-986b-3d3811017c03,93f08db5-6606-420a-ad39-a826e5d37136,0,Candidate is a frontend engineer with no relevant backend experience or skills
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,2,"Candidate has React experience, meets required skills and has adjacent expertise, but primary background is in Vue.js"
+ce634e92-751e-41fe-b210-d1a1e2983e7e,8aec0b5b-d3cf-4add-b81b-ea5020502300,0,"No relevant technical skills or experience in data engineering, healthcare, or required technologies"
+19eb00e1-f124-415c-aa27-135d3485bfad,8aec0b5b-d3cf-4add-b81b-ea5020502300,0,"Candidate lacks required backend skills, specifically Python, PostgreSQL, and AWS, and has no mentioned experience with fintech or payment systems"
+ff0b86a9-0f48-4324-986b-3d3811017c03,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,0,"Candidate lacks required backend skills in Python, PostgreSQL, and AWS"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,8aec0b5b-d3cf-4add-b81b-ea5020502300,2,"Candidate has React experience, meets required skills in TypeScript, and has adjacent experience with nice-to-have skills like GraphQL, but primary expertise is in Vue.js"
+992906db-ceff-47c9-ad90-1dbb15d63303,9d0fd135-8aab-4573-93e4-ce23a89c45b4,1,"Weak fit due to lack of direct experience with Spark, Airflow, and regulated/healthcare data, despite having relevant Python skills and strong engineering background."
+ce634e92-751e-41fe-b210-d1a1e2983e7e,d697c46d-1cc5-43b6-b5a5-d01fcc263a0c,0,Candidate lacks required backend skills and experience in data engineering
+ce634e92-751e-41fe-b210-d1a1e2983e7e,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,0,"No relevant technical skills or experience in data engineering, healthcare, or required technologies"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,00dc0826-b047-48db-9ef2-88d03cc8efba,0,"No relevant experience with React, TypeScript, or CSS, and primary focus is on DevOps rather than front-end development"
+4ef20978-359e-4fdc-88f2-fc103420aba4,bfa355b2-09ed-4e2f-ae7d-748059c1a909,0,"No relevant experience with React, TypeScript, or CSS, and primary skills are in data engineering with Python and SQL"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,9d0fd135-8aab-4573-93e4-ce23a89c45b4,0,"Candidate lacks required frontend skills, specifically React, TypeScript, and CSS, and has a strong backend focus."
+19eb00e1-f124-415c-aa27-135d3485bfad,00dc0826-b047-48db-9ef2-88d03cc8efba,1,"Weak fit due to lack of direct backend engineering experience and PostgreSQL skills, despite having relevant skills like Python, AWS, and experience with Kubernetes."
+4ef20978-359e-4fdc-88f2-fc103420aba4,93f08db5-6606-420a-ad39-a826e5d37136,3,"Candidate meets all required skills and has relevant experience, with additional nice-to-have skills like Next.js"
+4ef20978-359e-4fdc-88f2-fc103420aba4,9d0fd135-8aab-4573-93e4-ce23a89c45b4,0,"No relevant frontend experience with React, TypeScript, or CSS"
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,bfa355b2-09ed-4e2f-ae7d-748059c1a909,0,"No relevant experience with React, TypeScript, or front-end development"
+4ef20978-359e-4fdc-88f2-fc103420aba4,d697c46d-1cc5-43b6-b5a5-d01fcc263a0c,3,"Candidate meets all required skills and has relevant experience, with additional nice-to-have skills like Next.js"
+ce634e92-751e-41fe-b210-d1a1e2983e7e,70c19607-acc6-4922-9862-3af72ca3af44,3,Candidate has all required skills and extensive experience in healthcare analytics
+19eb00e1-f124-415c-aa27-135d3485bfad,5e0d9dc6-9acd-434a-9603-9d2aba0c7359,0,"Candidate lacks required backend skills, specifically Python, PostgreSQL, and AWS experience"
+992906db-ceff-47c9-ad90-1dbb15d63303,93f08db5-6606-420a-ad39-a826e5d37136,0,Candidate lacks required backend skills and experience in data engineering
+992906db-ceff-47c9-ad90-1dbb15d63303,00dc0826-b047-48db-9ef2-88d03cc8efba,1,"Weak fit due to lack of direct experience with Spark, SQL, Airflow, and healthcare data, despite having Python skills"
+992906db-ceff-47c9-ad90-1dbb15d63303,8aec0b5b-d3cf-4add-b81b-ea5020502300,0,No relevant technical skills or experience for the Data Engineer position
+19eb00e1-f124-415c-aa27-135d3485bfad,d697c46d-1cc5-43b6-b5a5-d01fcc263a0c,0,Candidate is a frontend engineer with no relevant backend experience or skills
+877f1969-3aef-4cae-bda9-dd7d8063a0b1,d697c46d-1cc5-43b6-b5a5-d01fcc263a0c,3,"Candidate meets all required skills and has relevant experience, with additional nice-to-have skills like Next.js"
