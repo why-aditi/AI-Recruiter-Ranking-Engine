@@ -1,6 +1,6 @@
 -- Run as PostgreSQL superuser (e.g. psql -U postgres -f scripts/init-local-postgres.sql)
--- Requires pgvector extension installed on your local PostgreSQL.
--- Prefer Docker: bash scripts/up.sh (uses port 5433 to avoid conflicting with local Postgres)
+-- Requires pgvector extension installed on your local PostgreSQL 18+.
+-- Docker: pgvector/pgvector:pg18 on host port 5434 (bash scripts/up.sh)
 
 CREATE USER recruiter WITH PASSWORD 'recruiter';
 CREATE DATABASE recruiter_ranking OWNER recruiter;

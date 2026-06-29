@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     )
 
     app_env: str = "development"
-    database_url: str = "postgresql+asyncpg://recruiter:recruiter@localhost:5433/recruiter_ranking"
-    database_url_sync: str = "postgresql://recruiter:recruiter@localhost:5433/recruiter_ranking"
+    database_url: str = "postgresql+asyncpg://recruiter:recruiter@localhost:5434/recruiter_ranking"
+    database_url_sync: str = "postgresql://recruiter:recruiter@localhost:5434/recruiter_ranking"
     redis_url: str = "redis://localhost:6379/0"
 
     groq_api_key: str = ""

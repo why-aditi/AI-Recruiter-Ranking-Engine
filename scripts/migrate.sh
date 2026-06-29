@@ -7,7 +7,10 @@ if ! bash scripts/check-db.sh; then
   exit 1
 fi
 
-source .venv/Scripts/activate
+PY="$ROOT/.venv/Scripts/python.exe"
+if [[ ! -x "$PY" ]]; then
+  PY="$ROOT/.venv/bin/python"
+fi
 cd backend
-python -m alembic upgrade head
+"$PY" -m alembic upgrade head
 echo "Migrations complete."

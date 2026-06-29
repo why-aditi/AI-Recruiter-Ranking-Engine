@@ -34,7 +34,7 @@ except Exception as e:
     print("  A) Use Docker Postgres (recommended):")
     print("     - Install Docker Desktop")
     print("     - bash scripts/up.sh")
-    print("     - Set in .env: DATABASE_URL_SYNC=postgresql://recruiter:recruiter@localhost:5433/recruiter_ranking")
+    print("     - Set in .env: DATABASE_URL_SYNC=postgresql://recruiter:recruiter@localhost:5434/recruiter_ranking")
     print("       (and same host/port for DATABASE_URL with +asyncpg)")
     print("  B) Use your existing local Postgres on port 5432:")
     print("     - psql -U postgres -f scripts/init-local-postgres.sql")

@@ -30,8 +30,6 @@ def upgrade() -> None:
     )
 
     user_role = postgresql.ENUM("recruiter", "hiring_manager", "admin", "ml", name="userrole")
-    user_role.create(op.get_bind(), checkfirst=True)
-
     op.create_table(
         "users",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
