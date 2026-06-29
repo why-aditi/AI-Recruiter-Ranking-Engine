@@ -40,12 +40,12 @@ async def retrieve_candidates(
         SELECT id, external_id, name, title, location, category, raw_text, profile,
                skills, years_experience, seniority_level, career_metadata, behavioral,
                data_source, tenant_id, created_at,
-               1 - (embedding <=> :embedding::vector) AS semantic_score
+               1 - (embedding <=> CAST(:embedding AS vector)) AS semantic_score
         FROM candidates
-        WHERE tenant_id = :tenant_id::uuid
+        WHERE tenant_id = CAST(:tenant_id AS uuid)
           AND embedding IS NOT NULL
           {location_clause}
-        ORDER BY embedding <=> :embedding::vector
+        ORDER BY embedding <=> CAST(:embedding AS vector)
         LIMIT :top_k
     """)
     params["embedding"] = embedding_str

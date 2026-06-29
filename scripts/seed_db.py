@@ -18,7 +18,7 @@ def seed():
     with engine.connect() as conn:
         conn.execute(text("""
             INSERT INTO tenants (id, name, slug)
-            VALUES (:id::uuid, 'Default Tenant', 'default')
+            VALUES (CAST(:id AS uuid), 'Default Tenant', 'default')
             ON CONFLICT DO NOTHING
         """), {"id": DEFAULT_TENANT})
 
@@ -29,7 +29,7 @@ def seed():
             conn.execute(
                 text("""
                     INSERT INTO users (id, tenant_id, email, hashed_password, role)
-                    VALUES (:id::uuid, :tenant_id::uuid, :email, :password, 'admin')
+                    VALUES (CAST(:id AS uuid), CAST(:tenant_id AS uuid), :email, :password, 'admin')
                 """),
                 {
                     "id": str(uuid.uuid4()),

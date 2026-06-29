@@ -125,8 +125,9 @@ def load_resumes(session: Session, limit: int | None = None) -> int:
             text("""
                 INSERT INTO candidates (id, tenant_id, external_id, name, title, raw_text, profile,
                     embedding, skills, years_experience, seniority_level, career_metadata, behavioral, data_source)
-                VALUES (:id, :tenant_id::uuid, :external_id, :name, :title, :raw_text, :profile::jsonb,
-                    :embedding::vector, :skills::jsonb, :years, :seniority, :career::jsonb, :behavioral::jsonb, :source)
+                VALUES (CAST(:id AS uuid), CAST(:tenant_id AS uuid), :external_id, :name, :title, :raw_text,
+                    CAST(:profile AS jsonb), CAST(:embedding AS vector), CAST(:skills AS jsonb),
+                    :years, :seniority, CAST(:career AS jsonb), CAST(:behavioral AS jsonb), :source)
             """),
             {
                 "id": str(uuid.uuid4()),
@@ -196,7 +197,8 @@ def load_jobs(session: Session, limit: int | None = None) -> int:
             session.execute(
                 text("""
                     INSERT INTO jobs (id, tenant_id, title, company, location, category, raw_text, jd_hash, embedding)
-                    VALUES (:id, :tenant_id::uuid, :title, :company, :location, :category, :raw_text, :jd_hash, :embedding::vector)
+                    VALUES (CAST(:id AS uuid), CAST(:tenant_id AS uuid), :title, :company, :location, :category,
+                        :raw_text, :jd_hash, CAST(:embedding AS vector))
                 """),
                 {
                     "id": str(uuid.uuid4()),
