@@ -24,14 +24,11 @@ def keyword_baseline(
 
     scored = []
     for cid, raw_text, skills in candidates:
-        cand_tokens = _tokenize(raw_text) | {_tokenize(s) for s in skills}
-        flat_tokens = set()
-        for t in cand_tokens:
-            if isinstance(t, set):
-                flat_tokens |= t
-            else:
-                flat_tokens.add(t)
-        overlap = len(keywords & flat_tokens)
+        skill_tokens: set[str] = set()
+        for s in skills:
+            skill_tokens |= _tokenize(str(s))
+        cand_tokens = _tokenize(raw_text) | skill_tokens
+        overlap = len(keywords & cand_tokens)
         scored.append((cid, overlap))
 
     scored.sort(key=lambda x: x[1], reverse=True)
